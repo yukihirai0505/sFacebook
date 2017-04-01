@@ -78,11 +78,5 @@ future onComplete {
 
 Please look at this file to see all available methods:
 
-https://github.com/yukihirai0505/sFacebook/blob/master/src/main/scala/com/yukihirai0505/instsagram/FacebookClient.scala
+https://github.com/yukihirai0505/sFacebook/blob/master/src/main/scala/com/yukihirai0505/sFacebook/FacebookBase
 
-## References
-
-inspired by following source code
-
-- https://github.com/sachin-handiekar/jFacebook
-- https://github.com/Rydgel/scalagram
