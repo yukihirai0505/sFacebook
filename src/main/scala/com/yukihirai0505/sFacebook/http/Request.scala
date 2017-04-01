@@ -1,4 +1,4 @@
-package com.yukihirai0505.http
+package com.yukihirai0505.sFacebook.http
 
 import com.ning.http.client.FluentCaseInsensitiveStringsMap
 import dispatch.Defaults._

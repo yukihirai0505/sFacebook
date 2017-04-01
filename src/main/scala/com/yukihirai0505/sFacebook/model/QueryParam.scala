@@ -1,4 +1,4 @@
-package com.yukihirai0505.model
+package com.yukihirai0505.sFacebook.model
 
 /**
   * author Yuki Hirai on 2016/11/09.

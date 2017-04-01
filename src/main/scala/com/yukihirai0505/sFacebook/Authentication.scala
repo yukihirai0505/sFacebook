@@ -1,12 +1,13 @@
-package com.yukihirai0505
+package com.yukihirai0505.sFacebook
 
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
 import com.ning.http.client.FluentCaseInsensitiveStringsMap
-import com.yukihirai0505.http.Response
-import com.yukihirai0505.model.{Constants, OAuthConstants, Scope}
-import com.yukihirai0505.responses.auth._
+import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
+import com.yukihirai0505.sFacebook.http.Response
+import com.yukihirai0505.sFacebook.model.{Constants, OAuthConstants, Scope}
+import com.yukihirai0505.sFacebook.responses.auth._
 import dispatch.Defaults._
 import dispatch._
 import play.api.libs.json.Json

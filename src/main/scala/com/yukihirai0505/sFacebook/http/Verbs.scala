@@ -1,4 +1,4 @@
-package com.yukihirai0505.http
+package com.yukihirai0505.sFacebook.http
 
 /**
   * author Yuki Hirai on 2016/11/09.

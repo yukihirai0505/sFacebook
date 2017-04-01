@@ -35,10 +35,11 @@ http://mvnrepository.com/artifact/com.yukihirai0505/sFacebook_2.11/0.0.1
 ### Examples
 
 ```scala
-import com.yukihirai0505.http.Response
-import com.yukihirai0505.model.{ResponseType, Scope}
-import com.yukihirai0505.responses.auth.Auth
-import com.yukihirai0505.{Authentication, Facebook}
+import com.yukihirai0505.sFacebook.http.Response
+import com.yukihirai0505.sFacebook.model.Scope
+import com.yukihirai0505.sFacebook.auth.Auth
+import com.yukihirai0505.sFacebook.auth.AccessToken
+import com.yukihirai0505.sFacebook.{Authentication, Facebook}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}

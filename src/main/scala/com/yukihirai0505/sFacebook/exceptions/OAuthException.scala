@@ -1,4 +1,4 @@
-package com.yukihirai0505.exceptions
+package com.yukihirai0505.sFacebook.exceptions
 
 /**
   * Created by yukihirai on 2016/11/09.

@@ -1,4 +1,4 @@
-package com.yukihirai0505.responses.auth
+package com.yukihirai0505.sFacebook.auth
 
 sealed trait Auth
 case class AccessToken(token: String) extends Auth

@@ -1,4 +1,4 @@
-package com.yukihirai0505.responses.auth
+package com.yukihirai0505.sFacebook.responses.auth
 
 case class Oauth(accessToken: String, expires: Long)
 

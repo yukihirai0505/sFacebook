@@ -1,10 +1,9 @@
-package com.yukihirai0505.facebook
+package com.yukihirai0505.sFacebook
 
 import com.netaporter.uri.Uri._
-import com.yukihirai0505.Authentication
-import com.yukihirai0505.http.{Request, Response, Verbs}
-import com.yukihirai0505.model._
-import com.yukihirai0505.responses.auth.{AccessToken, Auth, SignedAccessToken}
+import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
+import com.yukihirai0505.sFacebook.http.{Request, Response, Verbs}
+import com.yukihirai0505.sFacebook.model.{Constants, OAuthConstants, QueryParam}
 import dispatch._
 import play.api.libs.json.Reads
 

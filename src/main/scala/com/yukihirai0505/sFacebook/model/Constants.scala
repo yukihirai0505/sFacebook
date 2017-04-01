@@ -1,4 +1,4 @@
-package com.yukihirai0505.model
+package com.yukihirai0505.sFacebook.model
 
 /**
   * project constant
