@@ -1,6 +1,6 @@
 package com.yukihirai0505.sFacebook.responses.auth
 
-case class Oauth(accessToken: String, expires: Long)
+case class Oauth(accessToken: String, tokenType: String, expiresIn: Long)
 
 import com.github.tototoshi.play.json.JsonNaming
 import play.api.libs.json.Json
