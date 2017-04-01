@@ -78,5 +78,4 @@ future onComplete {
 
 Please look at this file to see all available methods:
 
-https://github.com/yukihirai0505/sFacebook/blob/master/src/main/scala/com/yukihirai0505/sFacebook/FacebookBase
-
+https://github.com/yukihirai0505/sFacebook/blob/master/src/main/scala/com/yukihirai0505/sFacebook/FacebookBase.scala
