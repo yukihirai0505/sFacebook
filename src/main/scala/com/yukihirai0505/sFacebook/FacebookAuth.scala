@@ -101,7 +101,7 @@ class FacebookAuth {
    * @param code         Authentication code. You can retrieve it via codeURL.
    * @return             Future of Response[Authentication]
    */
-  def requestToken(clientId: String, clientSecret: String, redirectURI: String, code: String): Future[Response[Auth]] = {
+  def requestToken(clientId: String, clientSecret: String, redirectURI: String, code: String): Future[Option[AccessToken]] = {
     val params = Map(
       OAuthConstants.CLIENT_ID -> clientId,
       OAuthConstants.CLIENT_SECRET -> clientSecret,
@@ -111,12 +111,11 @@ class FacebookAuth {
     val request = url(Constants.ACCESS_TOKEN_ENDPOINT) << params
     Http(request).map { resp =>
       val response = resp.getResponseBody
-      val headers = ningHeadersToMap(resp.getHeaders)
+      // val headers = ningHeadersToMap(resp.getHeaders)
       if (resp.getStatusCode != 200) throw new Exception(response.toString)
       Json.parse(response).asOpt[Oauth] match {
-        case Some(o: Oauth) => Response(Some(AccessToken(o.accessToken)), resp.getStatusCode, headers)
-        case _ =>
-          Response(None, resp.getStatusCode, headers)
+        case Some(o: Oauth) => Some(AccessToken(o.accessToken))
+        case _ => None
       }
     }
   }
