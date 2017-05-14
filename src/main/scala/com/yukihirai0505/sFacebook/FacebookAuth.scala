@@ -14,7 +14,7 @@ import play.api.libs.json.Json
 
 import scala.collection.JavaConverters._
 
-class Authentication {
+class FacebookAuth {
 
   /**
    * Tell if authentication type is secure.
