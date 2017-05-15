@@ -2,6 +2,7 @@ package com.yukihirai0505.sFacebook
 
 import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
+import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.me.UserData
 import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import helpers.WebHelper
@@ -102,6 +103,11 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     val request = Await.result(new Facebook(AccessToken(accessToken)).publishPost(userId, Some(message)), Duration.Inf)
     postId = request.fold("")(x => x.id)
     request should be(anInstanceOf[Some[PublishPost]])
+  }
+
+  "deletePost" should "return Success" in {
+    val request = Await.result(new Facebook(AccessToken(accessToken)).deletePost(postId), Duration.Inf)
+    request should be(anInstanceOf[Some[Success]])
   }
 
 }

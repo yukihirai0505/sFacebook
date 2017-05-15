@@ -6,5 +6,5 @@ package com.yukihirai0505.sFacebook.model
 object Methods {
   val ME = "/me"
 
-  val POST_WITH_ID = "/%s/feed"
+  val FEED_WITH_ID = "/%s/feed"
 }

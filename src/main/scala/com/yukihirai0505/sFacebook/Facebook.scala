@@ -4,6 +4,7 @@ import com.netaporter.uri.Uri._
 import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Response, Verbs}
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
+import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.me.UserData
 import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import dispatch._
@@ -69,15 +70,13 @@ class Facebook(auth: Auth) {
     Request.send[T](requestWithParams)
   }
 
-  // TODO: User Info
   def getMe(): Future[Option[UserData]] = {
     val apiPath: String = Methods.ME
     request[UserData](Verbs.GET, apiPath)
   }
 
-  // TODO: Post Publish
   def publishPost(userId: String, message: Option[String]): Future[Option[PublishPost]] = {
-    val apiPath: String = Methods.POST_WITH_ID format userId
+    val apiPath: String = Methods.FEED_WITH_ID format userId
     val params = Option(
       Map(
         "message" -> message
@@ -86,5 +85,8 @@ class Facebook(auth: Auth) {
     request[PublishPost](Verbs.POST, apiPath, params)
   }
 
-  // TODO: Post Delete
+  def deletePost(postId: String): Future[Option[Success]] = {
+    val apiPath: String = s"/$postId"
+    request[Success](Verbs.DELETE, apiPath)
+  }
 }
