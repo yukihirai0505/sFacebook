@@ -2,6 +2,7 @@ package com.yukihirai0505.sFacebook
 
 import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
+import com.yukihirai0505.sFacebook.responses.me.UserData
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -52,6 +53,7 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   var authUrl = ""
   var code = ""
   var accessToken = ""
+  var userId = ""
 
   "Facebook Auth url" should "return a valid authorization url" in {
     authUrl = auth.authURL(clientId, redirectUri, scopes)
@@ -86,4 +88,9 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[AccessToken]])
   }
 
+  "getMe" should "return UserData" in {
+    val request = Await.result(new Facebook(AccessToken(accessToken)).getMe(), Duration.Inf)
+    userId = request.fold("")(x => x.id)
+    request should be(anInstanceOf[Some[UserData]])
+  }
 }

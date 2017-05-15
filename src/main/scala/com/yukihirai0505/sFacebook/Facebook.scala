@@ -3,7 +3,8 @@ package com.yukihirai0505.sFacebook
 import com.netaporter.uri.Uri._
 import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Response, Verbs}
-import com.yukihirai0505.sFacebook.model.{Constants, OAuthConstants, QueryParam}
+import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
+import com.yukihirai0505.sFacebook.responses.me.UserData
 import dispatch._
 import play.api.libs.json.Reads
 
@@ -47,7 +48,7 @@ class Facebook(auth: Auth) {
     case _ => params
   }
 
-  def request[T](verb: Verbs, apiPath: String, params: Option[Map[String, Option[String]]] = None)(implicit r: Reads[T]): Future[Response[T]] = {
+  def request[T](verb: Verbs, apiPath: String, params: Option[Map[String, Option[String]]] = None)(implicit r: Reads[T]): Future[Option[T]] = {
     val parameters: Map[String, String] = params match {
       case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
       case None => Map.empty
@@ -62,4 +63,14 @@ class Facebook(auth: Auth) {
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
   }
+
+  // TODO: User Info
+  def getMe(): Future[Option[UserData]] = {
+    val apiPath: String = Methods.ME
+    request[UserData](Verbs.GET, apiPath)
+  }
+
+  // TODO: Post Publish
+
+  // TODO: Post Delete
 }
