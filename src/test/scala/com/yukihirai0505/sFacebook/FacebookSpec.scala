@@ -60,37 +60,30 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   }
 
   "Request Auth url" should "return a valid code" in {
-    val identifierIdKey = "identifierId"
-    val passwordKey = "password"
-    val nextClass = "CwaK9"
+    val emailIdKey = "email"
+    val passwordKey = "pass"
+    val loginBtn = "loginbutton"
 
     open(authUrl)
 
-    /***
-    waitId(identifierIdKey)
-    findElementById(identifierIdKey).sendKeys(gmailId)
-    findElementByClassName(nextClass).click()
-
-    waitName(passwordKey)
-    findElementByName(passwordKey).sendKeys(gmailPassword)
-    findElementByClassName(nextClass).click()
-
+    waitId(emailIdKey)
+    findElementById(emailIdKey).sendKeys(facebookId)
+    findElementByName(passwordKey).sendKeys(facebookPassword)
+    findElementById(loginBtn).click()
     waitUrlContains("code")
-    code = "code=[^&]+".r.findFirstIn(currentUrl).getOrElse("").split("=")(1)
+    code = "code=[^&]+".r.findFirstIn(currentUrl).getOrElse("").replace("code=", "")
     println(s"code: $code")
+
     assert(code.nonEmpty)
-      ***/
   }
 
-  /***
   "Request AccessToken" should "return accessToken" in {
-    val request = Await.result(auth.requestToken(code, clientId, clientSecret, redirectUri), Duration.Inf)
+    val request = Await.result(auth.requestToken(clientId, clientSecret, redirectUri, code), Duration.Inf)
     request.foreach { v =>
       accessToken = v.token
       println(s"accessToken: $accessToken")
     }
     request should be(anInstanceOf[Some[AccessToken]])
   }
-    ***/
 
 }

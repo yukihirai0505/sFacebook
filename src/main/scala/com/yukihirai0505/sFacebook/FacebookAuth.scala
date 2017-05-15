@@ -1,5 +1,6 @@
 package com.yukihirai0505.sFacebook
 
+import java.net.URLDecoder
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
 
@@ -106,9 +107,10 @@ class FacebookAuth {
       OAuthConstants.CLIENT_ID -> clientId,
       OAuthConstants.CLIENT_SECRET -> clientSecret,
       OAuthConstants.REDIRECT_URI -> redirectURI,
-      OAuthConstants.CODE -> code
+      OAuthConstants.CODE -> URLDecoder.decode(code, "utf8")
     )
     val request = url(Constants.ACCESS_TOKEN_ENDPOINT) << params
+    println(request.url)
     Http(request).map { resp =>
       val response = resp.getResponseBody
       // val headers = ningHeadersToMap(resp.getHeaders)
