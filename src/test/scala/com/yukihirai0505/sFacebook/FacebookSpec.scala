@@ -3,6 +3,7 @@ package com.yukihirai0505.sFacebook
 import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
 import com.yukihirai0505.sFacebook.responses.me.UserData
+import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -48,12 +49,14 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   val facebookId: String = testData.getOrElse("facebookId", "")
   val facebookPassword: String = testData.getOrElse("facebookPassword", "")
   val scopes = Seq(
-    Scope.PUBLIC_PROFILE
+    Scope.PUBLIC_PROFILE,
+    Scope.PUBLISH_ACTIONS
   )
   var authUrl = ""
   var code = ""
   var accessToken = ""
   var userId = ""
+  var postId = ""
 
   "Facebook Auth url" should "return a valid authorization url" in {
     authUrl = auth.authURL(clientId, redirectUri, scopes)
@@ -93,4 +96,12 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     userId = request.fold("")(x => x.id)
     request should be(anInstanceOf[Some[UserData]])
   }
+
+  "publishPost" should "return PublishPost" in {
+    val message = "test"
+    val request = Await.result(new Facebook(AccessToken(accessToken)).publishPost(userId, Some(message)), Duration.Inf)
+    postId = request.fold("")(x => x.id)
+    request should be(anInstanceOf[Some[PublishPost]])
+  }
+
 }

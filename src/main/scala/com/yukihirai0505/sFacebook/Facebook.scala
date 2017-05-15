@@ -5,6 +5,7 @@ import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Response, Verbs}
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
 import com.yukihirai0505.sFacebook.responses.me.UserData
+import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import dispatch._
 import play.api.libs.json.Reads
 
@@ -20,14 +21,14 @@ class Facebook(auth: Auth) {
     * Transform an Authentication type to be used in a URL.
     *
     * @param a Authentication
-    * @return  String
+    * @return String
     */
   protected def authToGETParams(a: Auth): String = a match {
     case AccessToken(token) => s"${OAuthConstants.ACCESS_TOKEN}=$token"
     case SignedAccessToken(token, _) => s"${OAuthConstants.ACCESS_TOKEN}=$token"
   }
 
-  protected def addSecureSigIfNeeded(url: String, postData: Option[Map[String,String]] = None)
+  protected def addSecureSigIfNeeded(url: String, postData: Option[Map[String, String]] = None)
   : String = auth match {
     case SignedAccessToken(_, secret) =>
       val uri = parse(url)
@@ -42,8 +43,8 @@ class Facebook(auth: Auth) {
     case _ => url
   }
 
-  protected def concatMapOpt(postData: Option[Map[String,String]], params: Map[String,Option[String]])
-  : Map[String,Option[String]] = postData match {
+  protected def concatMapOpt(postData: Option[Map[String, String]], params: Map[String, Option[String]])
+  : Map[String, Option[String]] = postData match {
     case Some(m) => params ++ m.mapValues(Some(_))
     case _ => params
   }
@@ -59,7 +60,11 @@ class Facebook(auth: Auth) {
       case _ => addSecureSigIfNeeded(accessTokenUrl, Some(parameters))
     }
     val request: Req = url(effectiveUrl).setMethod(verb.label)
-    val requestWithParams = if (verb.label == Verbs.GET.label) { request <<? parameters } else { request << parameters }
+    val requestWithParams = if (verb.label == Verbs.GET.label) {
+      request <<? parameters
+    } else {
+      request << parameters
+    }
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
   }
@@ -71,6 +76,15 @@ class Facebook(auth: Auth) {
   }
 
   // TODO: Post Publish
+  def publishPost(userId: String, message: Option[String]): Future[Option[PublishPost]] = {
+    val apiPath: String = Methods.POST_WITH_ID format userId
+    val params = Option(
+      Map(
+        "message" -> message
+      )
+    )
+    request[PublishPost](Verbs.POST, apiPath, params)
+  }
 
   // TODO: Post Delete
 }
