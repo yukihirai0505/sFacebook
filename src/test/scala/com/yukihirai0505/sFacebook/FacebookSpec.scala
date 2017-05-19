@@ -94,7 +94,7 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[AccessToken]])
   }
 
-  "get" should "return UserData" in {
+  "getUser" should "return UserData" in {
     val request = Await.result(new Facebook(AccessToken(accessToken)).getUser(), Duration.Inf)
     userId = request.fold("")(x => x.id)
     request should be(anInstanceOf[Some[UserData]])
@@ -117,7 +117,7 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[Success]])
   }
 
-  "publishPhotos" should "return PublishMePhotos" in {
+  "publishPhotos" should "return PublishPhotos" in {
     val facebook = new Facebook(AccessToken(accessToken))
     val request = Await.result(facebook.publishPhotos(), Duration.Inf)
     facebook.deletePost(request.get.postId)
