@@ -11,9 +11,9 @@ import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.Constants.ME
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
 import com.yukihirai0505.sFacebook.responses.common.Success
-import com.yukihirai0505.sFacebook.responses.me.UserData
 import com.yukihirai0505.sFacebook.responses.me.photos.PublishPhotos
-import com.yukihirai0505.sFacebook.responses.post.PublishPost
+import com.yukihirai0505.sFacebook.responses.post.{PostData, PublishPost}
+import com.yukihirai0505.sFacebook.responses.user.UserData
 import dispatch._
 
 import scala.language.postfixOps
@@ -86,15 +86,9 @@ class Facebook(auth: Auth) {
     request[UserData](Verbs.GET, apiPath)
   }
 
-  def publishPhotos(userId: String = ME): Future[Option[PublishPhotos]] = {
-    val apiPath: String = Methods.PHOTOS format userId
-    val params = Option(
-      Map(
-        "caption" -> Some("publish photo test")
-      )
-    )
-    val file = new File("yukihirai.jpg")
-    request[PublishPhotos](Verbs.POST, apiPath, params, Some(file))
+  def getPost(postId: String): Future[Option[PostData]] = {
+    val apiPath: String = s"/$postId"
+    request[PostData](Verbs.GET, apiPath)
   }
 
   def publishPost(userId: String = ME, message: Option[String]): Future[Option[PublishPost]] = {
@@ -110,5 +104,16 @@ class Facebook(auth: Auth) {
   def deletePost(postId: String): Future[Option[Success]] = {
     val apiPath: String = s"/$postId"
     request[Success](Verbs.DELETE, apiPath)
+  }
+
+  def publishPhotos(userId: String = ME): Future[Option[PublishPhotos]] = {
+    val apiPath: String = Methods.PHOTOS format userId
+    val params = Option(
+      Map(
+        "caption" -> Some("publish photo test")
+      )
+    )
+    val file = new File("yukihirai.jpg")
+    request[PublishPhotos](Verbs.POST, apiPath, params, Some(file))
   }
 }

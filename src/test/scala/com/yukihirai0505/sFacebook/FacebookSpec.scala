@@ -3,9 +3,9 @@ package com.yukihirai0505.sFacebook
 import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
 import com.yukihirai0505.sFacebook.responses.common.Success
-import com.yukihirai0505.sFacebook.responses.me.UserData
 import com.yukihirai0505.sFacebook.responses.me.photos.PublishPhotos
-import com.yukihirai0505.sFacebook.responses.post.PublishPost
+import com.yukihirai0505.sFacebook.responses.post.{PostData, PublishPost}
+import com.yukihirai0505.sFacebook.responses.user.UserData
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
 import org.scalatest.{FlatSpec, Matchers}
@@ -52,7 +52,8 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   val facebookPassword: String = testData.getOrElse("facebookPassword", "")
   val scopes = Seq(
     Scope.PUBLIC_PROFILE,
-    Scope.PUBLISH_ACTIONS
+    Scope.PUBLISH_ACTIONS,
+    Scope.USER_POSTS
   )
   var authUrl = ""
   var code = ""
@@ -93,15 +94,10 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[AccessToken]])
   }
 
-  "getMe" should "return UserData" in {
+  "get" should "return UserData" in {
     val request = Await.result(new Facebook(AccessToken(accessToken)).getUser(), Duration.Inf)
     userId = request.fold("")(x => x.id)
     request should be(anInstanceOf[Some[UserData]])
-  }
-
-  "publishPhotos" should "return PublishMePhotos" in {
-    val request = Await.result(new Facebook(AccessToken(accessToken)).publishPhotos(), Duration.Inf)
-    request should be(anInstanceOf[Some[PublishPhotos]])
   }
 
   "publishPost" should "return PublishPost" in {
@@ -111,9 +107,21 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     request should be(anInstanceOf[Some[PublishPost]])
   }
 
+  "getPost" should "return PostData" in {
+    val request = Await.result(new Facebook(AccessToken(accessToken)).getPost(postId), Duration.Inf)
+    request should be(anInstanceOf[Some[PostData]])
+  }
+
   "deletePost" should "return Success" in {
     val request = Await.result(new Facebook(AccessToken(accessToken)).deletePost(postId), Duration.Inf)
     request should be(anInstanceOf[Some[Success]])
+  }
+
+  "publishPhotos" should "return PublishMePhotos" in {
+    val facebook = new Facebook(AccessToken(accessToken))
+    val request = Await.result(facebook.publishPhotos(), Duration.Inf)
+    facebook.deletePost(request.get.postId)
+    request should be(anInstanceOf[Some[PublishPhotos]])
   }
 
 }
