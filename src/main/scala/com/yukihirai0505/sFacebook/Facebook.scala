@@ -1,14 +1,19 @@
 package com.yukihirai0505.sFacebook
 
+import java.io.File
+
+import play.api.libs.json.Reads
+
 import com.netaporter.uri.Uri._
+import com.ning.http.client.multipart.{FilePart, StringPart}
 import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
-import com.yukihirai0505.sFacebook.http.{Request, Response, Verbs}
+import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
 import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.me.UserData
+import com.yukihirai0505.sFacebook.responses.me.photos.PublishMePhotos
 import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import dispatch._
-import play.api.libs.json.Reads
 
 import scala.language.postfixOps
 
@@ -50,7 +55,7 @@ class Facebook(auth: Auth) {
     case _ => params
   }
 
-  def request[T](verb: Verbs, apiPath: String, params: Option[Map[String, Option[String]]] = None)(implicit r: Reads[T]): Future[Option[T]] = {
+  def request[T](verb: Verbs, apiPath: String, params: Option[Map[String, Option[String]]] = None, imageFile: Option[File] = None)(implicit r: Reads[T]): Future[Option[T]] = {
     val parameters: Map[String, String] = params match {
       case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
       case None => Map.empty
@@ -61,11 +66,16 @@ class Facebook(auth: Auth) {
       case _ => addSecureSigIfNeeded(accessTokenUrl, Some(parameters))
     }
     val request: Req = url(effectiveUrl).setMethod(verb.label)
-    val requestWithParams = if (verb.label == Verbs.GET.label) {
-      request <<? parameters
-    } else {
-      request << parameters
-    }
+    val requestWithParams =
+      if (verb == Verbs.GET) request <<? parameters
+      else if (imageFile.isDefined) {
+        def addBodyParts(params: Map[String, String], req: Req): Req = {
+          if (params.isEmpty) req
+          else addBodyParts(params.tail, req.addBodyPart(new StringPart(params.head._1, params.head._2)))
+        }
+
+        addBodyParts(parameters, request.addBodyPart(new FilePart("source", imageFile.get)))
+      } else request << parameters
     println(requestWithParams.url)
     Request.send[T](requestWithParams)
   }
@@ -73,6 +83,17 @@ class Facebook(auth: Auth) {
   def getMe(): Future[Option[UserData]] = {
     val apiPath: String = Methods.ME
     request[UserData](Verbs.GET, apiPath)
+  }
+
+  def publishMePhotos(): Future[Option[PublishMePhotos]] = {
+    val apiPath: String = Methods.ME_PHOTOS
+    val params = Option(
+      Map(
+        "caption" -> Some("publish photo test")
+      )
+    )
+    val file = new File("yukihirai.jpg")
+    request[PublishMePhotos](Verbs.POST, apiPath, params, Some(file))
   }
 
   def publishPost(userId: String, message: Option[String]): Future[Option[PublishPost]] = {
