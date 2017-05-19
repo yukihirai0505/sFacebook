@@ -4,7 +4,7 @@ import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
 import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.me.UserData
-import com.yukihirai0505.sFacebook.responses.me.photos.PublishMePhotos
+import com.yukihirai0505.sFacebook.responses.me.photos.PublishPhotos
 import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import helpers.WebHelper
 import org.scalatest.matchers.{BePropertyMatchResult, BePropertyMatcher}
@@ -94,14 +94,14 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   }
 
   "getMe" should "return UserData" in {
-    val request = Await.result(new Facebook(AccessToken(accessToken)).getMe(), Duration.Inf)
+    val request = Await.result(new Facebook(AccessToken(accessToken)).getUser(), Duration.Inf)
     userId = request.fold("")(x => x.id)
     request should be(anInstanceOf[Some[UserData]])
   }
 
-  "publishMePhotos" should "return PublishMePhotos" in {
-    val request = Await.result(new Facebook(AccessToken(accessToken)).publishMePhotos(), Duration.Inf)
-    request should be(anInstanceOf[Some[PublishMePhotos]])
+  "publishPhotos" should "return PublishMePhotos" in {
+    val request = Await.result(new Facebook(AccessToken(accessToken)).publishPhotos(), Duration.Inf)
+    request should be(anInstanceOf[Some[PublishPhotos]])
   }
 
   "publishPost" should "return PublishPost" in {

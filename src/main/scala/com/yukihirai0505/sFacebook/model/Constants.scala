@@ -17,4 +17,5 @@ object Constants {
 
   val API_URL: String = s"$BASE_GRAPH_URL"
 
+  val ME = "me"
 }

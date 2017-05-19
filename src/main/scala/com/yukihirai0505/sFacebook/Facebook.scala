@@ -11,7 +11,7 @@ import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
 import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.me.UserData
-import com.yukihirai0505.sFacebook.responses.me.photos.PublishMePhotos
+import com.yukihirai0505.sFacebook.responses.me.photos.PublishPhotos
 import com.yukihirai0505.sFacebook.responses.post.PublishPost
 import dispatch._
 
@@ -80,23 +80,23 @@ class Facebook(auth: Auth) {
     Request.send[T](requestWithParams)
   }
 
-  def getMe(): Future[Option[UserData]] = {
-    val apiPath: String = Methods.ME
+  def getUser(userId: String = Constants.ME): Future[Option[UserData]] = {
+    val apiPath: String = s"/$userId"
     request[UserData](Verbs.GET, apiPath)
   }
 
-  def publishMePhotos(): Future[Option[PublishMePhotos]] = {
-    val apiPath: String = Methods.ME_PHOTOS
+  def publishPhotos(userId: String = Constants.ME): Future[Option[PublishPhotos]] = {
+    val apiPath: String = Methods.PHOTOS format userId
     val params = Option(
       Map(
         "caption" -> Some("publish photo test")
       )
     )
     val file = new File("yukihirai.jpg")
-    request[PublishMePhotos](Verbs.POST, apiPath, params, Some(file))
+    request[PublishPhotos](Verbs.POST, apiPath, params, Some(file))
   }
 
-  def publishPost(userId: String, message: Option[String]): Future[Option[PublishPost]] = {
+  def publishPost(userId: String = Constants.ME, message: Option[String]): Future[Option[PublishPost]] = {
     val apiPath: String = Methods.FEED_WITH_ID format userId
     val params = Option(
       Map(

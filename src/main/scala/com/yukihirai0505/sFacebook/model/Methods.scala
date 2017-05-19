@@ -5,9 +5,7 @@ package com.yukihirai0505.sFacebook.model
   */
 object Methods {
 
-  val ME = "/me"
-
-  val ME_PHOTOS = "/me/photos"
+  val PHOTOS = "/%s/photos"
 
   val FEED_WITH_ID = "/%s/feed"
 
