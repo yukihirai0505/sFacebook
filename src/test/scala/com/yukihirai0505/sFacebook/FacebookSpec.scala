@@ -125,7 +125,7 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
 
   "publishPhotos" should "return PublishPhotos" in {
     val facebook = new Facebook(AccessToken(accessToken))
-    val request = Await.result(facebook.publishPhotos(), Duration.Inf)
+    val request = Await.result(facebook.publishPhotos(caption = "publish photo test"), Duration.Inf)
     facebook.deletePost(request.get.postId)
     request should be(anInstanceOf[Some[PublishPhotos]])
   }

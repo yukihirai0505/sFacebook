@@ -107,11 +107,11 @@ class Facebook(auth: Auth) {
     request[Success](Verbs.DELETE, apiPath)
   }
 
-  def publishPhotos(userId: String = ME): Future[Option[PublishPhotos]] = {
+  def publishPhotos(userId: String = ME, caption: String = ""): Future[Option[PublishPhotos]] = {
     val apiPath: String = Methods.PHOTOS format userId
     val params = Option(
       Map(
-        "caption" -> Some("publish photo test")
+        "caption" -> Some(caption)
       )
     )
     val file = new File("yukihirai.jpg")
