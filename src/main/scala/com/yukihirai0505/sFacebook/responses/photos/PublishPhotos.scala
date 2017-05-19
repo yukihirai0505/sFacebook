@@ -1,4 +1,4 @@
-package com.yukihirai0505.sFacebook.responses.me.photos
+package com.yukihirai0505.sFacebook.responses.photos
 
 case class PublishPhotos(id: String, postId: String)
 

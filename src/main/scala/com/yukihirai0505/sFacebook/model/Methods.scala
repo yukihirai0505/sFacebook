@@ -7,6 +7,7 @@ object Methods {
 
   val PHOTOS = "/%s/photos"
 
-  val FEED_WITH_ID = "/%s/feed"
+  val FEED = "/%s/feed"
 
+  val COMMENTS = "/%s/comments"
 }

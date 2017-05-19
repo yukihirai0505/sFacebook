@@ -10,8 +10,9 @@ import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.Constants.ME
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
+import com.yukihirai0505.sFacebook.responses.comments.Comments
 import com.yukihirai0505.sFacebook.responses.common.Success
-import com.yukihirai0505.sFacebook.responses.me.photos.PublishPhotos
+import com.yukihirai0505.sFacebook.responses.photos.PublishPhotos
 import com.yukihirai0505.sFacebook.responses.post.{PostData, PublishPost}
 import com.yukihirai0505.sFacebook.responses.user.UserData
 import dispatch._
@@ -92,7 +93,7 @@ class Facebook(auth: Auth) {
   }
 
   def publishPost(userId: String = ME, message: Option[String]): Future[Option[PublishPost]] = {
-    val apiPath: String = Methods.FEED_WITH_ID format userId
+    val apiPath: String = Methods.FEED format userId
     val params = Option(
       Map(
         "message" -> message
@@ -115,5 +116,10 @@ class Facebook(auth: Auth) {
     )
     val file = new File("yukihirai.jpg")
     request[PublishPhotos](Verbs.POST, apiPath, params, Some(file))
+  }
+
+  def getComments(objectId: String): Future[Option[Comments]] = {
+    val apiPath: String = Methods.COMMENTS format objectId
+    request[Comments](Verbs.GET, apiPath)
   }
 }

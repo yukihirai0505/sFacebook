@@ -2,8 +2,9 @@ package com.yukihirai0505.sFacebook
 
 import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
+import com.yukihirai0505.sFacebook.responses.comments.{CommentData, Comments}
 import com.yukihirai0505.sFacebook.responses.common.Success
-import com.yukihirai0505.sFacebook.responses.me.photos.PublishPhotos
+import com.yukihirai0505.sFacebook.responses.photos.PublishPhotos
 import com.yukihirai0505.sFacebook.responses.post.{PostData, PublishPost}
 import com.yukihirai0505.sFacebook.responses.user.UserData
 import helpers.WebHelper
@@ -110,6 +111,11 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   "getPost" should "return PostData" in {
     val request = Await.result(new Facebook(AccessToken(accessToken)).getPost(postId), Duration.Inf)
     request should be(anInstanceOf[Some[PostData]])
+  }
+
+  "getComments" should "return Comments" in {
+    val request = Await.result(new Facebook(AccessToken(accessToken)).getComments(postId), Duration.Inf)
+    request should be(anInstanceOf[Some[Seq[Comments]]])
   }
 
   "deletePost" should "return Success" in {
