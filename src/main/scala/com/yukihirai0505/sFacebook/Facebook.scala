@@ -8,6 +8,7 @@ import com.netaporter.uri.Uri._
 import com.ning.http.client.multipart.{FilePart, StringPart}
 import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Verbs}
+import com.yukihirai0505.sFacebook.model.Constants.ME
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
 import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.me.UserData
@@ -80,12 +81,12 @@ class Facebook(auth: Auth) {
     Request.send[T](requestWithParams)
   }
 
-  def getUser(userId: String = Constants.ME): Future[Option[UserData]] = {
+  def getUser(userId: String = ME): Future[Option[UserData]] = {
     val apiPath: String = s"/$userId"
     request[UserData](Verbs.GET, apiPath)
   }
 
-  def publishPhotos(userId: String = Constants.ME): Future[Option[PublishPhotos]] = {
+  def publishPhotos(userId: String = ME): Future[Option[PublishPhotos]] = {
     val apiPath: String = Methods.PHOTOS format userId
     val params = Option(
       Map(
@@ -96,7 +97,7 @@ class Facebook(auth: Auth) {
     request[PublishPhotos](Verbs.POST, apiPath, params, Some(file))
   }
 
-  def publishPost(userId: String = Constants.ME, message: Option[String]): Future[Option[PublishPost]] = {
+  def publishPost(userId: String = ME, message: Option[String]): Future[Option[PublishPost]] = {
     val apiPath: String = Methods.FEED_WITH_ID format userId
     val params = Option(
       Map(
