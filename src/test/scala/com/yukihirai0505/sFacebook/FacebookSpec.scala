@@ -2,8 +2,8 @@ package com.yukihirai0505.sFacebook
 
 import java.io.File
 
-import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
+import com.yukihirai0505.sFacebook.responses.auth.Oauth
 import com.yukihirai0505.sFacebook.responses.comments.Comments
 import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.photos.PublishPhotos
@@ -20,7 +20,7 @@ import scala.language.postfixOps
 import scala.util.Try
 
 /***
-  * Yuky
+  * For test Facebook class
   */
 class FacebookSpec extends FlatSpec with Matchers with WebHelper {
 
@@ -58,7 +58,7 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     Scope.PUBLISH_ACTIONS,
     Scope.USER_POSTS
   )
-  var facebook = new Facebook(AccessToken(""))
+  var facebook = new Facebook("")
   var authUrl = ""
   var code = ""
   var userId = ""
@@ -88,13 +88,13 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
     assert(code.nonEmpty)
   }
 
-  "Request AccessToken" should "return accessToken" in {
+  "Request AccessToken" should "return Oauth" in {
     val request = Await.result(auth.requestToken(clientId, clientSecret, redirectUri, code), Duration.Inf)
-    request.foreach { v =>
-      facebook = new Facebook(AccessToken(v.token))
-      println(s"accessToken: ${v.token}")
+    request.foreach { oauth =>
+      facebook = new Facebook(oauth.accessToken)
+      println(s"accessToken: ${oauth.accessToken}")
     }
-    request should be(anInstanceOf[Some[AccessToken]])
+    request should be(anInstanceOf[Some[Oauth]])
   }
 
   "getUser" should "return UserData" in {

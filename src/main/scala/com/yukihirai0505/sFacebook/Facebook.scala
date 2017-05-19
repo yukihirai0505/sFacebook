@@ -5,7 +5,6 @@ import java.io.File
 import play.api.libs.json.Reads
 
 import com.ning.http.client.multipart.{FilePart, StringPart}
-import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.Constants.ME
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants}
@@ -22,21 +21,11 @@ import scala.language.postfixOps
 /**
   * author Yuki Hirai on 2016/11/09.
   */
-class Facebook(auth: Auth) {
+class Facebook(accessToken: String) {
 
-  /**
-    * Transform an Authentication type to be used in a URL.
-    *
-    * @param a Authentication
-    * @return String
-    */
-  protected def authToGETParams(a: Auth): String = a match {
-    case AccessToken(token) => s"${OAuthConstants.ACCESS_TOKEN}=$token"
-    case SignedAccessToken(token, _) => s"${OAuthConstants.ACCESS_TOKEN}=$token"
-  }
-
-  /***
+  /** *
     * Make facebook api request
+    *
     * @param verb
     * @param apiPath
     * @param params
@@ -50,7 +39,7 @@ class Facebook(auth: Auth) {
       case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
       case None => Map.empty
     }
-    val effectiveUrl = s"${Constants.API_URL}$apiPath?${authToGETParams(auth)}"
+    val effectiveUrl = s"${Constants.API_URL}$apiPath?${OAuthConstants.ACCESS_TOKEN}=$accessToken"
     val request: Req = url(effectiveUrl).setMethod(verb.label)
     val requestWithParams =
       if (verb == Verbs.GET) request <<? parameters
@@ -66,8 +55,9 @@ class Facebook(auth: Auth) {
     Request.send[T](requestWithParams)
   }
 
-  /***
+  /** *
     * Get facebook User info
+    *
     * @param userId
     * @return
     */
@@ -76,8 +66,9 @@ class Facebook(auth: Auth) {
     request[UserData](Verbs.GET, apiPath)
   }
 
-  /***
+  /** *
     * Get facebook post info
+    *
     * @param postId
     * @return
     */
@@ -86,8 +77,9 @@ class Facebook(auth: Auth) {
     request[PostData](Verbs.GET, apiPath)
   }
 
-  /***
+  /** *
     * Create new post
+    *
     * @param userId
     * @param message
     * @return
@@ -102,8 +94,9 @@ class Facebook(auth: Auth) {
     request[PublishPost](Verbs.POST, apiPath, params)
   }
 
-  /***
+  /** *
     * Delete post
+    *
     * @param postId
     * @return
     */
@@ -112,8 +105,9 @@ class Facebook(auth: Auth) {
     request[Success](Verbs.DELETE, apiPath)
   }
 
-  /***
+  /** *
     * Create new post with image file
+    *
     * @param userId
     * @param caption
     * @param imageFile
@@ -129,8 +123,9 @@ class Facebook(auth: Auth) {
     request[PublishPhotos](Verbs.POST, apiPath, params, Some(imageFile))
   }
 
-  /***
+  /** *
     * Get facebook comment info
+    *
     * @param objectId
     * @return
     */
