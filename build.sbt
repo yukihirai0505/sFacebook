@@ -62,6 +62,6 @@ pomExtra :=
     <developer>
       <id>yukihirai0505</id>
       <name>Yuki Hirai</name>
-      <url>https://blog.yukihirai0505.com</url>
+      <url>https://yukihirai0505.github.io/</url>
     </developer>
   </developers>
