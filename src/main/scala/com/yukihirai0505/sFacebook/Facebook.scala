@@ -4,12 +4,11 @@ import java.io.File
 
 import play.api.libs.json.Reads
 
-import com.netaporter.uri.Uri._
 import com.ning.http.client.multipart.{FilePart, StringPart}
 import com.yukihirai0505.sFacebook.auth.{AccessToken, Auth, SignedAccessToken}
 import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.Constants.ME
-import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants, QueryParam}
+import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants}
 import com.yukihirai0505.sFacebook.responses.comments.Comments
 import com.yukihirai0505.sFacebook.responses.common.Success
 import com.yukihirai0505.sFacebook.responses.photos.PublishPhotos
@@ -36,37 +35,22 @@ class Facebook(auth: Auth) {
     case SignedAccessToken(token, _) => s"${OAuthConstants.ACCESS_TOKEN}=$token"
   }
 
-  protected def addSecureSigIfNeeded(url: String, postData: Option[Map[String, String]] = None)
-  : String = auth match {
-    case SignedAccessToken(_, secret) =>
-      val uri = parse(url)
-      val params = uri.query.params
-      val auth: FacebookAuth = new FacebookAuth
-      val sig = auth.createSignedParam(
-        secret,
-        uri.pathRaw,
-        concatMapOpt(postData, params.toMap)
-      )
-      uri.addParam(QueryParam.SIGNATURE, sig).toStringRaw
-    case _ => url
-  }
-
-  protected def concatMapOpt(postData: Option[Map[String, String]], params: Map[String, Option[String]])
-  : Map[String, Option[String]] = postData match {
-    case Some(m) => params ++ m.mapValues(Some(_))
-    case _ => params
-  }
-
+  /***
+    * Make facebook api request
+    * @param verb
+    * @param apiPath
+    * @param params
+    * @param imageFile
+    * @param r
+    * @tparam T
+    * @return
+    */
   def request[T](verb: Verbs, apiPath: String, params: Option[Map[String, Option[String]]] = None, imageFile: Option[File] = None)(implicit r: Reads[T]): Future[Option[T]] = {
     val parameters: Map[String, String] = params match {
       case Some(m) => m.filter(_._2.isDefined).mapValues(_.getOrElse("")).filter(!_._2.isEmpty)
       case None => Map.empty
     }
-    val accessTokenUrl = s"${Constants.API_URL}$apiPath?${authToGETParams(auth)}"
-    val effectiveUrl: String = verb match {
-      case Verbs.GET => addSecureSigIfNeeded(accessTokenUrl)
-      case _ => addSecureSigIfNeeded(accessTokenUrl, Some(parameters))
-    }
+    val effectiveUrl = s"${Constants.API_URL}$apiPath?${authToGETParams(auth)}"
     val request: Req = url(effectiveUrl).setMethod(verb.label)
     val requestWithParams =
       if (verb == Verbs.GET) request <<? parameters
@@ -82,16 +66,32 @@ class Facebook(auth: Auth) {
     Request.send[T](requestWithParams)
   }
 
+  /***
+    * Get facebook User info
+    * @param userId
+    * @return
+    */
   def getUser(userId: String = ME): Future[Option[UserData]] = {
     val apiPath: String = s"/$userId"
     request[UserData](Verbs.GET, apiPath)
   }
 
+  /***
+    * Get facebook post info
+    * @param postId
+    * @return
+    */
   def getPost(postId: String): Future[Option[PostData]] = {
     val apiPath: String = s"/$postId"
     request[PostData](Verbs.GET, apiPath)
   }
 
+  /***
+    * Create new post
+    * @param userId
+    * @param message
+    * @return
+    */
   def publishPost(userId: String = ME, message: Option[String]): Future[Option[PublishPost]] = {
     val apiPath: String = Methods.FEED format userId
     val params = Option(
@@ -102,22 +102,38 @@ class Facebook(auth: Auth) {
     request[PublishPost](Verbs.POST, apiPath, params)
   }
 
+  /***
+    * Delete post
+    * @param postId
+    * @return
+    */
   def deletePost(postId: String): Future[Option[Success]] = {
     val apiPath: String = s"/$postId"
     request[Success](Verbs.DELETE, apiPath)
   }
 
-  def publishPhotos(userId: String = ME, caption: String = ""): Future[Option[PublishPhotos]] = {
+  /***
+    * Create new post with image file
+    * @param userId
+    * @param caption
+    * @param imageFile
+    * @return
+    */
+  def publishPhotos(userId: String = ME, caption: String = "", imageFile: File): Future[Option[PublishPhotos]] = {
     val apiPath: String = Methods.PHOTOS format userId
     val params = Option(
       Map(
         "caption" -> Some(caption)
       )
     )
-    val file = new File("yukihirai.jpg")
-    request[PublishPhotos](Verbs.POST, apiPath, params, Some(file))
+    request[PublishPhotos](Verbs.POST, apiPath, params, Some(imageFile))
   }
 
+  /***
+    * Get facebook comment info
+    * @param objectId
+    * @return
+    */
   def getComments(objectId: String): Future[Option[Comments]] = {
     val apiPath: String = Methods.COMMENTS format objectId
     request[Comments](Verbs.GET, apiPath)

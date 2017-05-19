@@ -1,5 +1,7 @@
 package com.yukihirai0505.sFacebook
 
+import java.io.File
+
 import com.yukihirai0505.sFacebook.auth.AccessToken
 import com.yukihirai0505.sFacebook.model.Scope
 import com.yukihirai0505.sFacebook.responses.comments.Comments
@@ -124,7 +126,8 @@ class FacebookSpec extends FlatSpec with Matchers with WebHelper {
   }
 
   "publishPhotos" should "return PublishPhotos" in {
-    val request = Await.result(facebook.publishPhotos(caption = "publish photo test"), Duration.Inf)
+    val file = new File("yukihirai.jpg")
+    val request = Await.result(facebook.publishPhotos(caption = "publish photo test", imageFile = file), Duration.Inf)
     facebook.deletePost(request.get.postId)
     request should be(anInstanceOf[Some[PublishPhotos]])
   }
