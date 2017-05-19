@@ -23,7 +23,7 @@ import scala.language.postfixOps
   */
 class Facebook(accessToken: String) {
 
-  /** *
+  /**
     * Make facebook api request
     *
     * @param verb
@@ -55,7 +55,7 @@ class Facebook(accessToken: String) {
     Request.send[T](requestWithParams)
   }
 
-  /** *
+  /**
     * Get facebook User info
     *
     * @param userId
@@ -66,7 +66,7 @@ class Facebook(accessToken: String) {
     request[UserData](Verbs.GET, apiPath)
   }
 
-  /** *
+  /**
     * Get facebook post info
     *
     * @param postId
@@ -77,7 +77,7 @@ class Facebook(accessToken: String) {
     request[PostData](Verbs.GET, apiPath)
   }
 
-  /** *
+  /**
     * Create new post
     *
     * @param userId
@@ -94,7 +94,7 @@ class Facebook(accessToken: String) {
     request[PublishPost](Verbs.POST, apiPath, params)
   }
 
-  /** *
+  /**
     * Delete post
     *
     * @param postId
@@ -105,7 +105,7 @@ class Facebook(accessToken: String) {
     request[Success](Verbs.DELETE, apiPath)
   }
 
-  /** *
+  /**
     * Create new post with image file
     *
     * @param userId
@@ -123,7 +123,7 @@ class Facebook(accessToken: String) {
     request[PublishPhotos](Verbs.POST, apiPath, params, Some(imageFile))
   }
 
-  /** *
+  /**
     * Get facebook comment info
     *
     * @param objectId
