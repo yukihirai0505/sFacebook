@@ -1,9 +1,9 @@
 package com.yukihirai0505.sFacebook
 
 import java.io.File
+import java.nio.charset.Charset
 
 import play.api.libs.json.Reads
-
 import com.ning.http.client.multipart.{FilePart, StringPart}
 import com.yukihirai0505.sFacebook.http.{Request, Verbs}
 import com.yukihirai0505.sFacebook.model.Constants.ME
@@ -46,7 +46,7 @@ class Facebook(accessToken: String) {
       else if (imageFile.isDefined) {
         def addBodyParts(params: Map[String, String], req: Req): Req = {
           if (params.isEmpty) req
-          else addBodyParts(params.tail, req.addBodyPart(new StringPart(params.head._1, params.head._2)))
+          else addBodyParts(params.tail, req.addBodyPart(new StringPart(params.head._1, params.head._2, "text/plain", Charset.forName("UTF-8"))))
         }
 
         addBodyParts(parameters, request.addBodyPart(new FilePart("source", imageFile.get)))
