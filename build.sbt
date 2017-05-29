@@ -10,6 +10,13 @@ scalaVersion := "2.11.8"
 
 scalacOptions += "-feature"
 
+version := "1.0-SNAPSHOT"
+
+lazy val scalaRequestJson = ProjectRef(file("./git-submodules/scala-request-json"), "scala-request-json")
+lazy val root = Project(id = "root", base = file("./"))
+  .dependsOn(scalaRequestJson)
+  .aggregate(scalaRequestJson)
+
 resolvers += "Typesafe repository" at "http://repo.typesafe.com/typesafe/releases/"
 
 libraryDependencies ++= Seq(
