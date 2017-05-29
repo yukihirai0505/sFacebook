@@ -4,9 +4,10 @@ import java.io.File
 import java.nio.charset.Charset
 
 import play.api.libs.json.Reads
+
 import com.ning.http.client.multipart.{FilePart, StringPart}
 import com.yukihirai0505.com.scala.Request
-import com.yukihirai0505.sFacebook.http.Verbs
+import com.yukihirai0505.com.scala.constants.Verbs
 import com.yukihirai0505.sFacebook.model.Constants.ME
 import com.yukihirai0505.sFacebook.model.{Constants, Methods, OAuthConstants}
 import com.yukihirai0505.sFacebook.responses.comments.Comments
